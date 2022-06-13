@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Mainscene</class>
+ <widget class="QMainWindow" name="Mainscene">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1132</width>
+    <height>718</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QWidget" name="widget" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QGroupBox" name="groupBox_Image">
+         <property name="minimumSize">
+          <size>
+           <width>780</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>图像部分</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QWidget" name="widget_Image" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>779</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>779</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_Button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>310</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>310</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>按钮部分</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QWidget" name="widget_3" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="btn_OpenCamera">
+               <property name="text">
+                <string>打开相机</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_Measure">
+               <property name="text">
+                <string>开始识别</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTextBrowser" name="textBrowser"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1132</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>用户向导</string>
+    </property>
+    <addaction name="actionSwitchUsers"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>工程管理</string>
+    </property>
+    <addaction name="actionEngDoc"/>
+    <addaction name="actionStationSet"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>相机操作</string>
+    </property>
+    <addaction name="actionCameraParameters"/>
+    <addaction name="actionCameraCalibration"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>工位参数</string>
+    </property>
+    <addaction name="actionLight"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSaveFile">
+   <property name="text">
+    <string>保存</string>
+   </property>
+  </action>
+  <action name="actionSaveAsFile">
+   <property name="text">
+    <string>另存为</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="actionEngDoc">
+   <property name="text">
+    <string>工程文档</string>
+   </property>
+  </action>
+  <action name="actionStationSet">
+   <property name="text">
+    <string>工位设置</string>
+   </property>
+  </action>
+  <action name="actionSwitchUsers">
+   <property name="text">
+    <string>切换用户</string>
+   </property>
+  </action>
+  <action name="actionCameraParameters">
+   <property name="text">
+    <string>相机参数</string>
+   </property>
+  </action>
+  <action name="actionCameraCalibration">
+   <property name="text">
+    <string>相机标定</string>
+   </property>
+  </action>
+  <action name="actionLight">
+   <property name="text">
+    <string>光源参数</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

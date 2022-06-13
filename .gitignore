@@ -1,0 +1,5 @@
+build/*
+LogFile/*
+debug.log
+.vscode/*
+xmlDataFileAll.xml
