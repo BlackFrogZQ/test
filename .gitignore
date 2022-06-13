@@ -2,4 +2,5 @@ build/*
 LogFile/*
 debug.log
 .vscode/*
+lib/halcon12x64/halcon.dll
 xmlDataFileAll.xml
