@@ -2,9 +2,8 @@
 #include "ui_LightSet.h"
 #include "HalconCpp.h"
 #include "HDevThread.h"
-#include <QWidget>
+#include "../basic.h"
 #include <QMessageBox>
-#include <QDebug>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QRegExp>

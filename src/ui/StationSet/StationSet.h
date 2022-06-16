@@ -3,7 +3,7 @@
 #include "StationAttribute.h"
 #include "ModelTool.h"
 #include "ROITool.h"
-#include <QWidget >
+#include <QDialog>
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
@@ -11,7 +11,7 @@
 #include <QDebug>
 #define cnStr(str) QString::fromLocal8Bit(str)
 
-class StationSet : public QWidget  {
+class StationSet : public QDialog  {
     Q_OBJECT
 
 public:

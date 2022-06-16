@@ -1,14 +1,8 @@
 ﻿#pragma once
 #include "ui_EngDocument.h"
-#include <QWidget>
-#include <QMessageBox>
-#include <QFile>
-#include <QTextStream>
-#include <QFileDialog>
-#include <QDebug>
-#define cnStr(str) QString::fromLocal8Bit(str)
+#include "../basic.h"
 
-class EngDocument : public QWidget  {
+class EngDocument : public QDialog  {
     Q_OBJECT
 
 public:

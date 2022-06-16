@@ -43,31 +43,43 @@ set(Qt5model
 
 include_directories(include/halcon12x64 include/halcon12x64/halconcpp)
 file(GLOB LIBS "lib/halcon12x64/*.lib")
+set(GLOB uiFiles
+    "${PROJECT_SOURCE_DIR}/src/ui/*.ui"
+    "${PROJECT_SOURCE_DIR}/src/ui/EngDocument/*.ui"
+    "${PROJECT_SOURCE_DIR}/src/ui/SwitchUsers/*.ui"
+    "${PROJECT_SOURCE_DIR}/src/ui/Camera/*.ui"
+    "${PROJECT_SOURCE_DIR}/src/ui/LightSource/*.ui"
+    "${PROJECT_SOURCE_DIR}/src/ui/StationSet/*.ui")
 
-set(srcCpp
-    src/Mainscene.cpp
-    src/MyThread.cpp
-    src/MyThread_Discern.cpp
-    src/MyThread_DisOneCircle.cpp
-    src/StationSet/halconshare.cpp
-    src/StationSet/StationSet.cpp
-    src/StationSet/StationAttribute.cpp
-    src/StationSet/MultipleNum.cpp
-    src/StationSet/ModelTool.cpp
-    src/StationSet/MyThread_Model.cpp
-    src/StationSet/MyThread_ROI.cpp
-    src/StationSet/ROITool.cpp
-    src/EngDocument/EngDocument.cpp
-    src/SwitchUsers/SwitchUsers.cpp
-    src/Camera/CameraParams.cpp
-    src/LightSource/LightSet.cpp)
+set(uiCpp
+    src/ui/Mainscene.cpp
+    src/ui/MyThread.cpp
+    src/ui/MyThread_Discern.cpp
+    src/ui/MyThread_DisOneCircle.cpp
+    src/ui/StationSet/halconshare.cpp
+    src/ui/StationSet/StationSet.cpp
+    src/ui/StationSet/StationAttribute.cpp
+    src/ui/StationSet/MultipleNum.cpp
+    src/ui/StationSet/ModelTool.cpp
+    src/ui/StationSet/MyThread_Model.cpp
+    src/ui/StationSet/MyThread_ROI.cpp
+    src/ui/StationSet/ROITool.cpp
+    src/ui/EngDocument/EngDocument.cpp
+    src/ui/SwitchUsers/SwitchUsers.cpp
+    src/ui/Camera/CameraParams.cpp
+    src/ui/LightSource/LightSet.cpp)
+
+set(sources
+        ${uiFiles}
+        ${uiCpp}
+        main.cpp
+)
 
 qt5_add_resources(sources qml.qrc)
 
 add_executable(${PROJECT_NAME}
     # WIN32 # If you need a terminal for debug, please comment this statement
-    ${srcCpp}
-    main.cpp
+    ${sources}
 )
 target_link_libraries(${PROJECT_NAME}
     ${Qt5model}

@@ -1,8 +1,8 @@
 ﻿#include "ModelTool.h"
 
 ModelTool::ModelTool(QWidget *parent)
-    :   QWidget(parent),
-        ui(new Ui::ModelTool)
+    : QDialog(parent),
+      ui(new Ui::ModelTool)
 {
     ui->setupUi(this);
     ui->rBtn_Rectangle1->setChecked(true);
@@ -13,24 +13,36 @@ ModelTool::ModelTool(QWidget *parent)
 
     //优化算法
     QStringList OptimizationList;
-    OptimizationList << "auto"<< "none"<< "point_reduction_low"<< "point_reduction_medium"<< "point_reduction_high";
+    OptimizationList << "auto"
+                     << "none"
+                     << "point_reduction_low"
+                     << "point_reduction_medium"
+                     << "point_reduction_high";
     ui->ComboBox_Optimization->addItems(OptimizationList);
     ui->ComboBox_Optimization->setCurrentIndex(0);
     //极性
     QStringList MetricList;
-    MetricList << "use_polarity"<< "ignore_global_polarity"<< "ignore_local_polarity"<< "ignore_color_polarity";
+    MetricList << "use_polarity"
+               << "ignore_global_polarity"
+               << "ignore_local_polarity"
+               << "ignore_color_polarity";
     ui->ComboBox_Metric->addItems(MetricList);
     ui->ComboBox_Metric->setCurrentIndex(0);
 
-    connect(ui->btn_ModelGrab, &QPushButton::clicked, this, [this](){Obtain_Image();});
-    connect(ui->btn_RenewImage, &QPushButton::clicked, this, [this](){Obtain_Image();});
-    connect(ui->btn_DrawModel, &QPushButton::clicked, this, [this](){DrawModel();});
+    connect(ui->btn_ModelGrab, &QPushButton::clicked, this, [this]()
+            { Obtain_Image(); });
+    connect(ui->btn_RenewImage, &QPushButton::clicked, this, [this]()
+            { Obtain_Image(); });
+    connect(ui->btn_DrawModel, &QPushButton::clicked, this, [this]()
+            { DrawModel(); });
     connect(this, &ModelTool::Send_StartThread_Model, mT_Model, &MyThread_Model::GenerateTemplate, Qt::QueuedConnection);
     connect(mT_Model, &MyThread_Model::Send_ModelContours, this, &ModelTool::Show_ModelContours);
-    connect(ui->btn_ModelSave, &QPushButton::clicked, this, [this]() {Saves_Model();});
-    connect(ui->btn_ModelQuit, &QPushButton::clicked, this, [this](){
+    connect(ui->btn_ModelSave, &QPushButton::clicked, this, [this]()
+            { Saves_Model(); });
+    connect(ui->btn_ModelQuit, &QPushButton::clicked, this, [this]()
+            {
         dealClose();
-        close();});
+        close(); });
     connect(this, &ModelTool::destroyed, this, &ModelTool::dealClose);
 }
 
@@ -47,7 +59,8 @@ void ModelTool::Model_Show_Image(const HObject &Image, QString Station_Num_Tem)
 {
     Model_Image = Image;
     Station_Num = Station_Num_Tem;
-    if(Lock_UpdateImage == true){
+    if (Lock_UpdateImage == true)
+    {
         CloseWindow(WindowHandle);
     }
     update();
@@ -70,31 +83,36 @@ void ModelTool::DrawModel()
     QString Optimization = ui->ComboBox_Optimization->currentText();
     QString Metric = ui->ComboBox_Metric->currentText();
 
-    if(ui->rBtn_Rectangle1->isChecked()){
+    if (ui->rBtn_Rectangle1->isChecked())
+    {
         rBtn_Shape = 1;
     }
-    else if(ui->rBtn_Rectangle2->isChecked()){
+    else if (ui->rBtn_Rectangle2->isChecked())
+    {
         rBtn_Shape = 2;
     }
-    else if(ui->rBtn_Circle->isChecked()){
+    else if (ui->rBtn_Circle->isChecked())
+    {
         rBtn_Shape = 3;
     }
-    else{
+    else
+    {
         rBtn_Shape = 4;
     }
 
-    if(thread_Model->isRunning() == true)
+    if (thread_Model->isRunning() == true)
     {
         thread_Model->quit();
         thread_Model->wait();
     }
     thread_Model->start();
-    emit Send_StartThread_Model(Model_Image, WindowHandle, rBtn_Shape, Numberlever, AngleStart, AngleExtern, AngleStep, 
+    emit Send_StartThread_Model(Model_Image, WindowHandle, rBtn_Shape, Numberlever, AngleStart, AngleExtern, AngleStep,
                                 Contrast, MinContrast, Optimization, Metric);
 }
 void ModelTool::Show_ModelContours(const HObject &Contours_Image)
 {
-    if(Lock_ModelContours == true){
+    if (Lock_ModelContours == true)
+    {
         CloseWindow(ModelContours_WindowHandle);
     }
     update();
@@ -113,7 +131,7 @@ void ModelTool::Saves_Model()
 
 void ModelTool::dealClose()
 {
-    if(thread_Model->isRunning() == false)
+    if (thread_Model->isRunning() == false)
     {
         return;
     }

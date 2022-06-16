@@ -48,11 +48,5 @@
 	<file>res/write.png</file>
 	<file>res/zoomIn.png</file>
 	<file>res/zoomOut.png</file>
-	<file>res/一线交两边定位.png</file>
-	<file>res/圆.png</file>
-	<file>res/多圆定位.png</file>
-	<file>res/点.png</file>
-	<file>res/矩形1.png</file>
-	<file>res/矩形2.png</file>
 	</qresource>
 </RCC>

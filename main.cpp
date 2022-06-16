@@ -1,6 +1,7 @@
-#include "src/Mainscene.h"
 
 #include <QApplication>
+#include "src/ui/Mainscene.h"
+
 #pragma comment(lib, "user32.lib")
 
 int main(int argc, char *argv[])

@@ -1,15 +1,17 @@
 ﻿#include "EngDocument.h"
-
-EngDocument::EngDocument(QWidget* parent)
-    : QWidget(parent), 
-    ui(new Ui::EngDocument)
+#include <QFile>
+#include <QTextStream>
+#include <QFileDialog>
+EngDocument::EngDocument(QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::EngDocument)
 {
     ui->setupUi(this);
     this->setWindowTitle(cnStr("工程文档"));
 
     //设置Table_Eng
     ui->Table_Eng->setColumnCount(1);
-    ui->Table_Eng->setHorizontalHeaderLabels(QStringList()<< cnStr("工程名称"));
+    ui->Table_Eng->setHorizontalHeaderLabels(QStringList() << cnStr("工程名称"));
     ui->Table_Eng->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;color: black;}");
     ui->Table_Eng->setRowCount(0);
     ui->Table_Eng->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -27,16 +29,20 @@ EngDocument::EngDocument(QWidget* parent)
     QString lineStr;      //文件的每一行的字符串
     QStringList lineList; //整行字符串，分割处理为单个字符串，存入到表中
     varHash.clear();
-    lineList.clear();  //操作前，清空
+    lineList.clear(); //操作前，清空
     //遍历文件
-    while (!output.atEnd()){
+    while (!output.atEnd())
+    {
         QString str = output.readLine().trimmed();
-        if (str.size() == 0){
-            continue;}
+        if (str.size() == 0)
+        {
+            continue;
+        }
         lineList = str.split(' ');
         int rowCount = ui->Table_Eng->rowCount();
         ui->Table_Eng->insertRow(rowCount);
-        for (int i = 0; i < lineList.size(); i++){
+        for (int i = 0; i < lineList.size(); i++)
+        {
             QTableWidgetItem *item = new QTableWidgetItem(lineList[i]);
             item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             ui->Table_Eng->setItem(rowCount, i, item);
@@ -54,20 +60,24 @@ EngDocument::EngDocument(QWidget* parent)
     ui->lineEdit_CurrName->setText(str);
     f_CurrName.close();
 
-    //lineEdit_ProName禁用空格
+    // lineEdit_ProName禁用空格
     QRegExp rx = QRegExp("[A-Za-z0-9-\u4e00-\u9fa5]+$");
-    QRegExpValidator* validator = new QRegExpValidator(rx);
+    QRegExpValidator *validator = new QRegExpValidator(rx);
     ui->lineEdit_ProName->setValidator(validator);
 
-    connect(ui->btn_AddPro, &QPushButton::clicked, this, [=](){AddProject();});
-    connect(ui->btn_LoadPro, &QPushButton::clicked, this, [=](){LoadProject();});
-    connect(ui->btn_DeletePro, &QPushButton::clicked, this, [=](){DeleteProject();});
-    connect(ui->btn_EngQuit, &QPushButton::clicked, this, [=](){close();});
+    connect(ui->btn_AddPro, &QPushButton::clicked, this, [=]()
+            { AddProject(); });
+    connect(ui->btn_LoadPro, &QPushButton::clicked, this, [=]()
+            { LoadProject(); });
+    connect(ui->btn_DeletePro, &QPushButton::clicked, this, [=]()
+            { DeleteProject(); });
+    connect(ui->btn_EngQuit, &QPushButton::clicked, this, [=]()
+            { close(); });
 }
 
 EngDocument::~EngDocument()
 {
-    delete ui; 
+    delete ui;
 }
 
 void EngDocument::AddProject()
@@ -112,16 +122,17 @@ void EngDocument::AddProject()
 
 void EngDocument::LoadProject()
 {
-    //lineEdit_CurrName读取加载行表格的内容
+    // lineEdit_CurrName读取加载行表格的内容
     QString rowstring;
-    int Current_Row=ui->Table_Eng->currentRow();
+    int Current_Row = ui->Table_Eng->currentRow();
     rowstring = ui->Table_Eng->item(Current_Row, 0)->text().trimmed();
     ui->lineEdit_CurrName->setText(rowstring);
 
     //将更新后的表格数据保存到文本中
     QString filename = "./src/EngDocument/CurrentProject.txt";
     QFile file("./src/EngDocument/CurrentProject.txt");
-    if (!file.open(QFile::WriteOnly | QFile::Text)){
+    if (!file.open(QFile::WriteOnly | QFile::Text))
+    {
         QMessageBox::warning(this, tr("double file edit"), tr("no write ").arg(filename).arg(file.errorString()));
         return;
     }
@@ -138,24 +149,27 @@ void EngDocument::LoadProject()
 
 void EngDocument::DeleteProject()
 {
-    if(QMessageBox::Yes == QMessageBox::question(this, cnStr("提示"), cnStr("是否删除本行模板？"), 
-    QMessageBox::No | QMessageBox::Yes, QMessageBox::No)){
+    if (QMessageBox::Yes ==
+        QMessageBox::question(this, cnStr("提示"), cnStr("是否删除本行模板？"), QMessageBox::No | QMessageBox::Yes, QMessageBox::No))
+    {
         //删除选择的行
         int rowCount_Sum = ui->Table_Eng->rowCount();
-        int current_Row=ui->Table_Eng->currentRow();
+        int current_Row = ui->Table_Eng->currentRow();
         ui->Table_Eng->removeRow(current_Row);
 
         //将更新后的表格数据保存到文本中
         QString filename = "./src/EngDocument/SaveEngDocument.txt";
         QFile file("./src/EngDocument/SaveEngDocument.txt");
-        if (!file.open(QFile::WriteOnly | QFile::Text)){
+        if (!file.open(QFile::WriteOnly | QFile::Text))
+        {
             QMessageBox::warning(this, tr("double file edit"), tr("no write ").arg(filename).arg(file.errorString()));
             return;
         }
         QTextStream out(&file);
         out.setCodec("UTF-8");
         int romCount = ui->Table_Eng->rowCount();
-        for (int i = 0; i < romCount; i++){
+        for (int i = 0; i < romCount; i++)
+        {
             QString rowstring;
             rowstring += ui->Table_Eng->item(i, 0)->text().trimmed();
             rowstring = rowstring.trimmed() + "\n";
@@ -164,14 +178,16 @@ void EngDocument::DeleteProject()
         file.close();
 
         //如果删除的是最后一行，则lineEdit_CurrName的内容为更新后表格最后一行的内容
-        if(current_Row == rowCount_Sum-1){
+        if (current_Row == rowCount_Sum - 1)
+        {
             QString rowstring;
-            rowstring = ui->Table_Eng->item(current_Row-1, 0)->text().trimmed();
+            rowstring = ui->Table_Eng->item(current_Row - 1, 0)->text().trimmed();
             ui->lineEdit_CurrName->setText(rowstring);
 
             QString filename = "./src/EngDocument/CurrentProject.txt";
             QFile file("./src/EngDocument/CurrentProject.txt");
-            if (!file.open(QFile::WriteOnly | QFile::Text)){
+            if (!file.open(QFile::WriteOnly | QFile::Text))
+            {
                 QMessageBox::warning(this, tr("double file edit"), tr("no write ").arg(filename).arg(file.errorString()));
                 return;
             }

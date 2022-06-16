@@ -1,7 +1,7 @@
 ﻿#include "StationSet.h"
 
 StationSet::StationSet(QWidget* parent)
-    : QWidget(parent), 
+    : QDialog(parent),
     ui(new Ui::StationSet)
 {
     ui->setupUi(this);

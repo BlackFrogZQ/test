@@ -4,13 +4,13 @@
 #include "HDevThread.h"
 #include "halconshare.h"
 #include "MyThread_Model.h"
-#include <QWidget>
+#include <QDialog>
 #include <QDebug>
 #include <QStringList>
 #define cnStr(str) QString::fromLocal8Bit(str)
 using namespace HalconCpp;
 
-class ModelTool : public QWidget  {
+class ModelTool : public QDialog  {
     Q_OBJECT
 
 public:
