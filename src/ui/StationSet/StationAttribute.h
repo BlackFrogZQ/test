@@ -1,30 +1,23 @@
 ﻿#pragma once
 #include "ui_StationAttribute.h"
-#include "MultipleNum.h"
-#include <QWidget>
-#define cnStr(str) QString::fromLocal8Bit(str)
-
-class StationAttribute : public QWidget  {
+#include "StationAttributeDef.h"
+class StationAttribute : public QDialog
+{
     Q_OBJECT
 
 public:
-    explicit StationAttribute(QWidget* parent = nullptr);
+    explicit StationAttribute(QWidget *parent = nullptr);
     ~StationAttribute();
+    bool addStation();
 
-    void CurrentRow_Abute();
-    void AddStation();
-    void Receive_Num(int NUM);
+    CStationType getStationType() const;
+    QString getStationName() const;
+    int getMultiCircleCount() const;
 
-signals:
-    void Send_Abute(QString Abute, QString AbuteName, int NUM);
+protected:
+    void addStationTypeItem(const QString& p_icon,const QString& p_cnName);
 
 private:
     Ui::StationAttribute *ui;
-    MultipleNum *mNum;
-    StationAttribute *mStationAbute;
-
-    int SelectAbute_Row;
-    int NUM = 0;
-    QString Abute = NULL;
-    QString AbuteName = NULL;
+    bool m_isAdd;
 };

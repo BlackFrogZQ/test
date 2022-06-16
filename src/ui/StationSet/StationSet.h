@@ -1,25 +1,19 @@
 ﻿#pragma once
 #include "ui_StationSet.h"
-#include "StationAttribute.h"
 #include "ModelTool.h"
 #include "ROITool.h"
-#include <QDialog>
-#include <QMessageBox>
-#include <QFile>
-#include <QTextStream>
-#include <QFileDialog>
-#include <QDebug>
-#define cnStr(str) QString::fromLocal8Bit(str)
+#include "StationAttributeDef.h"
+#include "StationSetDef.h"
 
-class StationSet : public QDialog  {
+class QTableWidgetItem;
+class CSetStationDialog : public QDialog
+{
     Q_OBJECT
 
 public:
-    explicit StationSet(QWidget* parent = nullptr);
-    ~StationSet();
+    CSetStationDialog(QWidget *parent = nullptr);
+    ~CSetStationDialog();
 
-    void ShowStation();
-    void UpdateTable(QString Abute, QString AbuteName, int NUM);
     void CreateModel();
     void ObtainStationAbute(int MaxScore_Place);
 
@@ -27,11 +21,20 @@ signals:
     void Send_ShowModelTool(QString Station_Num);
     void Send_ShowROITool(QString CircularOrLine, QString Station_Num, int ROI_StationNum);
     void Send_MScoreAbuteName(QString MScoreAbuteName, int MaxScore_Place, int WorkStep_Sum);
+protected slots:
+    void slotAddStationPb();
 
+protected:
+    static QTableWidgetItem *getTableWidgetItem(const QString &p_text, int p_textAlignment = Qt::AlignCenter);
+    void addCircularPositioning();
+    void addMultiCirclePositioning(const int& p_multiCircleCount);
+    void addOneLineCrossingTwoSidesPositioning();
+
+    void addStationWorkingProcedure(const CStationWorkingProcedure& p_workingProcedure);
+    void addStationTitle(const CStationType& p_stationType, const QString& p_stationName);
 private:
     Ui::StationSet *ui;
-    StationAttribute *mStationAbute;
 
-    int Row_Station = 0;
+    int m_stationCount;
     QString CircularOrLine;
 };

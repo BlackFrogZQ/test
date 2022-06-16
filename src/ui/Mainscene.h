@@ -82,7 +82,7 @@ private:
     MyThread_DisOneCircle *myG_DisOneCircle;
     QThread *thread_DisOneCircle;
 
-    StationSet *mStationSet;
+    CSetStationDialog *mStationSet;
     EngDocument *mEngDocument;
     ModelTool *mModelTool;
     ROITool *mROITool;

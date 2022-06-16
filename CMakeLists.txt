@@ -59,7 +59,6 @@ set(uiCpp
     src/ui/StationSet/halconshare.cpp
     src/ui/StationSet/StationSet.cpp
     src/ui/StationSet/StationAttribute.cpp
-    src/ui/StationSet/MultipleNum.cpp
     src/ui/StationSet/ModelTool.cpp
     src/ui/StationSet/MyThread_Model.cpp
     src/ui/StationSet/MyThread_ROI.cpp

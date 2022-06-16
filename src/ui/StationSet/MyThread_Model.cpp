@@ -108,7 +108,7 @@ void MyThread_Model::GenerateTemplate(const HObject& ho_Image, HTuple hv_WindowH
 void MyThread_Model::mT_SavesModel(QString Station_Num)
 {
     QString path_current = QDir::currentPath();
-    QString add_current = "/src/StationSet/SaveModel/";
+    QString add_current = "saveModel/";
     path_current += add_current;
 
     HTuple hTuple_ShapeModel, hTuple_ModelPos, hv_Station_Num, hv_path_current;

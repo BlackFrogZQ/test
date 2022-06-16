@@ -52,7 +52,7 @@ Mainscene::Mainscene(QWidget *parent)
     mEngDocument = new EngDocument;
 
     mStationSet = NULL;
-    mStationSet = new StationSet;
+    mStationSet = new CSetStationDialog;
 
     mModelTool = NULL;
     mModelTool = new ModelTool;
@@ -66,9 +66,9 @@ Mainscene::Mainscene(QWidget *parent)
     mLightSet = NULL;
     mLightSet = new LightSet;
 
-    connect(mStationSet, &StationSet::Send_ShowModelTool, this, &Mainscene::Show_ModelTool); //给创建ModelTool窗口及向模板界面发送图像
+    connect(mStationSet, &CSetStationDialog::Send_ShowModelTool, this, &Mainscene::Show_ModelTool); //给创建ModelTool窗口及向模板界面发送图像
     connect(mModelTool, &ModelTool::Send_ObtainImage, this, &Mainscene::TransferImage);      //给创建ModelTool窗口及向模板界面发送图像
-    connect(mStationSet, &StationSet::Send_ShowROITool, this, &Mainscene::Show_ROITool);     //给创建ROITool窗口及向模板界面发送图像
+    connect(mStationSet, &CSetStationDialog::Send_ShowROITool, this, &Mainscene::Show_ROITool);     //给创建ROITool窗口及向模板界面发送图像
     connect(mROITool, &ROITool::Send_ObtainROIImage, this, &Mainscene::TransferROIImage);    //给创建ROITool窗口及向模板界面发送图像
 
     connect(ui->actionCameraParameters, &QAction::triggered, this, [=]()
@@ -165,7 +165,7 @@ Mainscene::Mainscene(QWidget *parent)
         i = 0;
         Lock_ShowMainThreadImage = false; });
     //接收最高分数的工位属性，并开始匹配
-    connect(mStationSet, &StationSet::Send_MScoreAbuteName, this, &Mainscene::OpenDiscernThread);
+    connect(mStationSet, &CSetStationDialog::Send_MScoreAbuteName, this, &Mainscene::OpenDiscernThread);
 
     //圆定位
     connect(this, &Mainscene::start_DisOneCircle, myG_DisOneCircle, &MyThread_DisOneCircle::Start_DisOneCircle, Qt::QueuedConnection);
@@ -225,6 +225,7 @@ void Mainscene::slot_StationSet()
 {
     mStationSet->exec();
 }
+
 //显示ModelTool窗口
 void Mainscene::Show_ModelTool(QString Station_Num)
 {
@@ -299,6 +300,7 @@ void Mainscene::Open_Camera(QWidget *widget)
     thread->start();
     emit startThread();
 }
+
 //在窗口上更新并显示图像
 void Mainscene::Show_Image(const HObject &Image)
 {
@@ -331,11 +333,13 @@ void Mainscene::Open_DiscernGJ()
     thread_GJ->start();
     emit startGJThread();
 }
+
 //把最大匹配分数的位置发送给工位编辑
 void Mainscene::TransportMaxScore(int MaxScore_Place)
 {
     mStationSet->ObtainStationAbute(MaxScore_Place);
 }
+
 //打开工件识别线程
 void Mainscene::OpenDiscernThread(QString MScoreAbuteName, int MaxScore_Place, int WorkStep_Sum)
 {
