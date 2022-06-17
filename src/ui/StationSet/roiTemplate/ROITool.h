@@ -4,31 +4,28 @@
 #include "HDevThread.h"
 #include "../halconshare.h"
 #include "roiDef.h"
-#include "../StationSetDef.h"
+#include "src/system/projectManager/StationSetDef.h"
 using namespace HalconCpp;
 
-class ROITool : public QDialog
+class CRoiToolDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ROITool(QWidget *parent = nullptr);
-    ~ROITool();
+    CRoiToolDialog(QWidget *parent = nullptr);
+    ~CRoiToolDialog();
+    void setStationMode(CWorkingProcedureMode CircularOrLine_Tem);
 
 public slots:
-    void Obtain_ROIImage();
-    void Model_Show_ROIImage(const HObject &Image, CStationMode CircularOrLine_Tem, QString Station_Num_Tem, int ROI_StationNum_Tem);
     //无后缀
     void saveTemplate(const QString &p_name);
 
-signals:
-    void Send_ObtainROIImage();
-
 protected slots:
-    void drawRoi();
+    void slotDrawRoi();
+    void slotGrabImage();
 
 protected:
-    void generateTemplate(const CDrawRoiShapeType &p_drawShape, const CStationMode &p_stationMode);
+    void generateTemplate(const CDrawRoiShapeType &p_drawShape, const CWorkingProcedureMode &p_stationMode);
 
     void showHImage(QWidget *p_widget, const HObject &p_image);
     HTuple getWidgetHandle(QWidget *p_widget);
@@ -38,7 +35,7 @@ protected:
     void drawCircular();
     void drawArbitrarily();
 
-    void drawContours(const CStationMode &p_stationMode);
+    void drawContours(const CWorkingProcedureMode &p_stationMode);
     void drawContoursCircular();
     void drawContoursLine();
 
@@ -49,5 +46,5 @@ private:
     HObject m_contoursImage;
 
     HTuple ROI_WindowHandle;
-    CStationMode m_stationMode;
+    CWorkingProcedureMode m_stationMode;
 };

@@ -44,6 +44,7 @@ set(Qt5model
 include_directories(include/halcon12x64 include/halcon12x64/halconcpp)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/hal)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/system)
 
 file(GLOB LIBS "lib/halcon12x64/*.lib")
 set(GLOB uiFiles
@@ -88,7 +89,8 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     ${Qt5model}
     ${LIBS}
-    halLib ) # Qt5 Shared Library
+    halLib
+    sysLib )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

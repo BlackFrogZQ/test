@@ -1,5 +1,5 @@
 ﻿#include "ROITool.h"
-void ROITool::drawTemplate(const CDrawRoiShapeType &p_drawShape)
+void CRoiToolDialog::drawTemplate(const CDrawRoiShapeType &p_drawShape)
 {
     switch (p_drawShape)
     {
@@ -20,33 +20,33 @@ void ROITool::drawTemplate(const CDrawRoiShapeType &p_drawShape)
     }
 }
 
-void ROITool::drawRectangle()
+void CRoiToolDialog::drawRectangle()
 {
     HTuple hv_Row_Rectangle, hv_Column_Rectangle1, hv_Row_Rectangle2, hv_Column_Rectangle3;
     DrawRectangle1(ROI_WindowHandle, &hv_Row_Rectangle, &hv_Column_Rectangle1, &hv_Row_Rectangle2, &hv_Column_Rectangle3);
     GenRectangle1(&m_template, hv_Row_Rectangle, hv_Column_Rectangle1, hv_Row_Rectangle2, hv_Column_Rectangle3);
 }
 
-void ROITool::drawRectangle2()
+void CRoiToolDialog::drawRectangle2()
 {
     HTuple hv_Row_Rectangle21, hv_Column_Rectangle21, hv_Phi_Rectangle2, hv_Length_Rectangle21, hv_Length_Rectangle22;
     DrawRectangle2(ROI_WindowHandle, &hv_Row_Rectangle21, &hv_Column_Rectangle21, &hv_Phi_Rectangle2, &hv_Length_Rectangle21, &hv_Length_Rectangle22);
     GenRectangle2(&m_template, hv_Row_Rectangle21, hv_Column_Rectangle21, hv_Phi_Rectangle2, hv_Length_Rectangle21, hv_Length_Rectangle22);
 }
 
-void ROITool::drawCircular()
+void CRoiToolDialog::drawCircular()
 {
     HTuple hv_Row_Rectangle21, hv_Column_Rectangle21, hv_Phi_Rectangle2;
     DrawCircle(ROI_WindowHandle, &hv_Row_Rectangle21, &hv_Column_Rectangle21, &hv_Phi_Rectangle2);
     GenCircle(&m_template, hv_Row_Rectangle21, hv_Column_Rectangle21, hv_Phi_Rectangle2);
 }
 
-void ROITool::drawArbitrarily()
+void CRoiToolDialog::drawArbitrarily()
 {
     DrawRegion(&m_template, ROI_WindowHandle);
 }
 
-void ROITool::drawContours(const CStationMode &p_stationMode)
+void CRoiToolDialog::drawContours(const CWorkingProcedureMode &p_stationMode)
 {
     switch (p_stationMode)
     {
@@ -61,7 +61,7 @@ void ROITool::drawContours(const CStationMode &p_stationMode)
     }
 }
 
-void ROITool::drawContoursCircular()
+void CRoiToolDialog::drawContoursCircular()
 {
     HObject tempImage;
     Rgb1ToGray(m_image, &tempImage);
@@ -120,7 +120,7 @@ void ROITool::drawContoursCircular()
     DispObj(m_contoursImage, ROI_WindowHandle);
 }
 
-void ROITool::drawContoursLine()
+void CRoiToolDialog::drawContoursLine()
 {
     HObject tempImage;
     Rgb1ToGray(m_image, &tempImage);

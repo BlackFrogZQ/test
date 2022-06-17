@@ -63,7 +63,7 @@ Mainscene::Mainscene(QWidget *parent)
     mLightSet = NULL;
     mLightSet = new LightSet;
 
-    connect(mStationSet, &CSetStationDialog::Send_ShowModelTool, this, &Mainscene::Show_ModelTool); //给创建ModelTool窗口及向模板界面发送图像
+    // connect(mStationSet, &CSetStationDialog::Send_ShowModelTool, this, &Mainscene::Show_ModelTool); //给创建ModelTool窗口及向模板界面发送图像
     connect(mModelTool, &ModelTool::Send_ObtainImage, this, &Mainscene::TransferImage);      //给创建ModelTool窗口及向模板界面发送图像
 
 
@@ -163,7 +163,7 @@ Mainscene::Mainscene(QWidget *parent)
         i = 0;
         Lock_ShowMainThreadImage = false; });
     //接收最高分数的工位属性，并开始匹配
-    connect(mStationSet, &CSetStationDialog::Send_MScoreAbuteName, this, &Mainscene::OpenDiscernThread);
+    // connect(mStationSet, &CSetStationDialog::Send_MScoreAbuteName, this, &Mainscene::OpenDiscernThread);
 
     //圆定位
     connect(this, &Mainscene::start_DisOneCircle, myG_DisOneCircle, &MyThread_DisOneCircle::Start_DisOneCircle, Qt::QueuedConnection);
@@ -319,7 +319,7 @@ void Mainscene::Open_DiscernGJ()
 //把最大匹配分数的位置发送给工位编辑
 void Mainscene::TransportMaxScore(int MaxScore_Place)
 {
-    mStationSet->ObtainStationAbute(MaxScore_Place);
+    // mStationSet->ObtainStationAbute(MaxScore_Place);
 }
 
 //打开工件识别线程

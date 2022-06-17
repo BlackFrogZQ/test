@@ -154,6 +154,13 @@
           </spacer>
          </item>
          <item>
+          <widget class="QPushButton" name="sanfPB">
+           <property name="text">
+            <string>扫描工程</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="btn_EngQuit">
            <property name="text">
             <string>退出</string>

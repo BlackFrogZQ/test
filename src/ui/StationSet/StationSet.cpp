@@ -1,11 +1,12 @@
 ﻿#include "StationSet.h"
+#include "roiTemplate/ROITool.h"
 #include "StationAttribute.h"
-#include <QFile>
-#include <QTextStream>
-#include <QFileDialog>
+#include "src/system/projectManager/projectManager.h"
+
 CSetStationDialog::CSetStationDialog(QWidget *parent)
     : QDialog(parent),
-      m_stationCount(0),
+      m_stationId(-1),
+      m_workingProcedureId(-1),
       ui(new Ui::StationSet)
 {
     ui->setupUi(this);
@@ -19,46 +20,15 @@ CSetStationDialog::CSetStationDialog(QWidget *parent)
     ui->Table_Temp->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->Table_Temp->verticalHeader()->setHidden(true);
     ui->Table_Temp->resizeRowsToContents();
-    // Table_Eng从文件读取数据
-    QFile f("./src/StationSet/SaveTemplateRecord.txt");
-    f.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream output(&f);
-    output.setCodec("UTF-8");
-    QStringList lineList;
-    //遍历文件
-    while (!output.atEnd())
-    {
-        QString str = output.readLine();
-        if (str.size() == 0)
-        {
-            continue;
-        }
-        lineList = str.split('*');
-
-        int rowCount = ui->Table_Temp->rowCount();
-        ui->Table_Temp->insertRow(rowCount);
-
-        for (int i = 0; i < lineList.size(); i++)
-        {
-            QTableWidgetItem *item = new QTableWidgetItem(lineList[i]);
-            item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            ui->Table_Temp->setItem(rowCount, i, item);
-            if (i == 0)
-            {
-                if (lineList[i] != cnStr(" "))
-                {
-                    m_stationCount++;
-                }
-            }
-        }
-    }
-    f.close();
-
     connect(ui->btn_AddStation, &QPushButton::clicked, this, &CSetStationDialog::slotAddStationPb);
-    connect(ui->btn_EditStation, &QPushButton::clicked, this, [=]()
-            { CreateModel(); });
+    connect(ui->btn_EditStation, &QPushButton::clicked, this, &CSetStationDialog::slotCreateModel);
+    connect(ui->btn_DeleteStation, &QPushButton::clicked, this, &CSetStationDialog::slotDelStationPb);
     connect(ui->btn_ExitEdit, &QPushButton::clicked, this, [=]()
             { close(); });
+
+    connect(ui->Table_Temp, &QTableWidget::cellClicked, this, &CSetStationDialog::slotCurrentChange);
+    m_project = projectManager()->getCurrentProject();
+    updateProject();
 }
 
 CSetStationDialog::~CSetStationDialog()
@@ -71,204 +41,105 @@ void CSetStationDialog::slotAddStationPb()
     StationAttribute stationAttributeDialog;
     if (stationAttributeDialog.addStation())
     {
-        addStationTitle(stationAttributeDialog.getStationType(),stationAttributeDialog.getStationName());
-        switch (stationAttributeDialog.getStationType())
+        m_project->stations.append(stationAttributeDialog.getAddStation(m_project->stations.size()));
+        QString dir = getSaveProjectDir() + "/" + m_project->getDirName() + "/" + m_project->stations.last().getDirName() + "/";
+        for (const auto &wb : m_project->stations.last().workingProcedures)
         {
-        case stCircularPositioning:
-            addCircularPositioning();
-            break;
-        case stMultiCirclePositioning:
-            addMultiCirclePositioning(stationAttributeDialog.getMultiCircleCount());
-            break;
-        case stOneLineCrossingTwoSidesPositioning:
-            addOneLineCrossingTwoSidesPositioning();
-            break;
-        default:
-            break;
+            createDir(dir + wb.getDirName());
         }
+        updateProject();
     }
 }
 
-void CSetStationDialog::addCircularPositioning()
+void CSetStationDialog::slotDelStationPb()
 {
-    addStationWorkingProcedure(
-        CStationWorkingProcedure(2, CStationMode::csmCircular, cnStr("圆")));
-}
-
-void CSetStationDialog::addMultiCirclePositioning(const int &p_multiCircleCount)
-{
-    for (size_t i = 0; i < p_multiCircleCount; i++)
+    if (m_stationId == -1)
     {
-        addStationWorkingProcedure(
-            CStationWorkingProcedure(i + 2, CStationMode::csmCircular, cnStr("圆")));
+        return;
     }
-}
-
-void CSetStationDialog::addOneLineCrossingTwoSidesPositioning()
-{
-    for (size_t i = 0; i < 4; i++)
-    {
-        addStationWorkingProcedure(
-            CStationWorkingProcedure(i + 2, CStationMode::csmLine, cnStr("线")));
-    }
+    m_project->removeStation(m_stationId);
+    updateProject();
 }
 
 void CSetStationDialog::addStationWorkingProcedure(const CStationWorkingProcedure &p_workingProcedure)
 {
     int iRow = ui->Table_Temp->rowCount();
     ui->Table_Temp->insertRow(iRow);
-    ui->Table_Temp->setItem(iRow, 1, getTableWidgetItem(cnStr("工序%1").arg(p_workingProcedure.id)));
+    ui->Table_Temp->setItem(iRow, 1, getTableWidgetItem(iToStr(p_workingProcedure.id)));
     ui->Table_Temp->setItem(iRow, 2, getTableWidgetItem(cStationModeStr[p_workingProcedure.mode]));
     ui->Table_Temp->setItem(iRow, 3, getTableWidgetItem(p_workingProcedure.name));
 }
 
-void CSetStationDialog::addStationTitle(const CStationType &p_stationType, const QString &p_stationName)
+void CSetStationDialog::slotCreateModel()
 {
-    int iRow = ui->Table_Temp->rowCount();
-    ui->Table_Temp->insertRow(iRow);
-    ui->Table_Temp->setItem(iRow, 0, getTableWidgetItem(cnStr("工位%1").arg(m_stationCount)));
-    ui->Table_Temp->setItem(iRow, 2, getTableWidgetItem(cStationTypeStr[p_stationType]));
-    ui->Table_Temp->setItem(iRow, 3, getTableWidgetItem(p_stationName));
-    addStationWorkingProcedure(
-        CStationWorkingProcedure(1, CStationMode::csmTemplate, cnStr("模板")));
-    m_stationCount++;
-}
-
-// void StationSet::UpdateTable(QString Abute, QString AbuteName, int NUM)
-// {
-//     //保存表格内容到txt
-//     QString filename = "./src/StationSet/SaveTemplateRecord.txt";
-//     QFile file("./src/StationSet/SaveTemplateRecord.txt");
-//     if (!file.open(QFile::WriteOnly | QFile::Text))
-//     {
-//         QMessageBox::warning(this, tr("double file edit"), tr("no write ").arg(filename).arg(file.errorString()));
-//         return;
-//     }
-//     QTextStream out(&file);
-//     out.setCodec("UTF-8");
-//     int romCount = ui->Table_Temp->rowCount();
-//     for (int i = 0; i < romCount; i++)
-//     {
-//         QString rowstring;
-//         for (int j = 0; j < 4; j++)
-//         {
-//             if (ui->Table_Temp->item(i, j)->text() == NULL)
-//             {
-//                 rowstring += ui->Table_Temp->item(i, j)->text() + " " + "*";
-//             }
-//             else
-//             {
-//                 rowstring += ui->Table_Temp->item(i, j)->text() + "*";
-//             }
-//         }
-//         rowstring = rowstring + "\n";
-//         out << rowstring;
-//     }
-//     file.close();
-// }
-
-void CSetStationDialog::CreateModel()
-{
-    if (ui->Table_Temp->item(ui->Table_Temp->currentRow(), 2)->text() == cnStr("模板"))
+    CStationWorkingProcedure wp = m_project->stations[m_stationId].workingProcedures[m_workingProcedureId];
+    switch (wp.mode)
     {
-        QString s, Station_Num;
-        s = ui->Table_Temp->item(ui->Table_Temp->currentRow() - 1, 0)->text(); //获取工位号
-        Station_Num = s[3];                                                    //获取工位号
-        emit Send_ShowModelTool(Station_Num);
-    }
-    else if (ui->Table_Temp->item(ui->Table_Temp->currentRow(), 2)->text() == cnStr("圆"))
-    {
-        QString s, Station_Num;
-        int ROI_StationNum;
-        //获取工位号
-        for (int i = 1; i < 30; i++)
-        {
-            if (ui->Table_Temp->item(ui->Table_Temp->currentRow() - i, 0) != nullptr)
-            {
-                s = ui->Table_Temp->item(ui->Table_Temp->currentRow() - i, 0)->text();
-                Station_Num = s[3];
-                break;
-            }
-        }
-        //获取工序号
-        for (int i = 1; i < 30; i++)
-        {
-            if (ui->Table_Temp->item(ui->Table_Temp->currentRow() - i, 2)->text() == cnStr("模板"))
-            {
-                ROI_StationNum = i;
-                break;
-            }
-        }
-        CircularOrLine = cnStr("圆");
-        // emit Send_ShowROITool(CircularOrLine, Station_Num, ROI_StationNum);
-    }
-    else if (ui->Table_Temp->item(ui->Table_Temp->currentRow(), 2)->text() == cnStr("线"))
-    {
-        QString s, Station_Num;
-        int ROI_StationNum;
-        //获取工位号
-        for (int i = 1; i < 30; i++)
-        {
-            if (ui->Table_Temp->item(ui->Table_Temp->currentRow() - i, 0)->text() == cnStr(" "))
-            {
-                continue;
-            }
-            else
-            {
-                s = ui->Table_Temp->item(ui->Table_Temp->currentRow() - i, 0)->text();
-                Station_Num = s[3];
-                break;
-            }
-        }
-        //获取工序号
-        for (int i = 1; i < 30; i++)
-        {
-            if (ui->Table_Temp->item(ui->Table_Temp->currentRow() - i, 2)->text() == cnStr("模板"))
-            {
-                ROI_StationNum = i;
-                break;
-            }
-        }
-        CircularOrLine = cnStr("线");
-        // emit Send_ShowROITool(CircularOrLine, Station_Num, ROI_StationNum);
+    case csmCircular:
+    case csmLine:
+        showRoiToolDialog(wp.mode);
+        break;
+    case csmTemplate:
+        showModelToolDialog();
+    default:
+        break;
     }
 }
 
-void CSetStationDialog::ObtainStationAbute(int MaxScore_Place)
+void CSetStationDialog::slotCurrentChange(int row)
 {
-    int rowCount_Sum = ui->Table_Temp->rowCount();
-    for (int i = 0; i < rowCount_Sum; i++)
+    int item = 0;
+    for (int i = 0; i < m_project->stations.size(); i++)
     {
-        QString s, Station_Num, MScoreAbuteName;
-        s = ui->Table_Temp->item(i, 0)->text();
-        Station_Num = s[3];
-        QString str = QString::number(MaxScore_Place);
-        if (Station_Num == str)
+        const CStation &station = m_project->stations[i];
+        if (row == item)
         {
-            MScoreAbuteName = ui->Table_Temp->item(i, 2)->text(); //获取工位属性
-
-            int WorkStep_Sum = 0; //获取工步总数
-            for (int j = i + 2; j < rowCount_Sum; j++)
-            {
-                if (ui->Table_Temp->item(j, 0)->text() == cnStr(" "))
-                {
-                    WorkStep_Sum++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            emit Send_MScoreAbuteName(MScoreAbuteName, MaxScore_Place, WorkStep_Sum);
-            break;
+            m_workingProcedureId = 0;
+            assert(m_workingProcedureId >= 0 && m_workingProcedureId < station.workingProcedures.size());
+            m_stationId = i;
+            return;
         }
+        item++;
+        if (row < (item + station.workingProcedures.size()))
+        {
+            m_workingProcedureId = row - item;
+            assert(m_workingProcedureId >= 0 && m_workingProcedureId < station.workingProcedures.size());
+            m_stationId = i;
+            return;
+        }
+        //每一个工位都多行
+        item += station.workingProcedures.size();
     }
+    m_stationId = -1;
+    m_workingProcedureId = -1;
 }
 
-QTableWidgetItem *CSetStationDialog::getTableWidgetItem(const QString &p_text, int p_textAlignment)
+void CSetStationDialog::showRoiToolDialog(const CWorkingProcedureMode &p_stationMode)
 {
-    QTableWidgetItem *pItem = new QTableWidgetItem(p_text);
-    pItem->setTextAlignment(p_textAlignment);
-    return pItem;
+    CRoiToolDialog roiToolDialog;
+    roiToolDialog.setStationMode(p_stationMode);
+    roiToolDialog.exec();
+}
+
+void CSetStationDialog::showModelToolDialog()
+{
+}
+
+void CSetStationDialog::updateProject()
+{
+    m_project->stationSrot();
+    ui->Table_Temp->setRowCount(0);
+
+    for (const auto &station : m_project->stations)
+    {
+        int iRow = ui->Table_Temp->rowCount();
+        ui->Table_Temp->insertRow(iRow);
+        ui->Table_Temp->setItem(iRow, 0, getTableWidgetItem(iToStr(station.id)));
+        ui->Table_Temp->setItem(iRow, 2, getTableWidgetItem(cStationTypeStr[station.type]));
+        ui->Table_Temp->setItem(iRow, 3, getTableWidgetItem(station.name));
+        for (const auto &wp : station.workingProcedures)
+        {
+            addStationWorkingProcedure(wp);
+        }
+    }
 }

@@ -26,7 +26,7 @@ StationAttribute::StationAttribute(QWidget *parent)
     QRegExpValidator *validator = new QRegExpValidator(rx);
     ui->stationName->setValidator(validator);
     connect(ui->Table_Abute, &QTableWidget::cellClicked, this, [this]()
-            { 
+            {
                 int id = ui->Table_Abute->currentRow();
                 (id==CStationType::stMultiCirclePositioning)?ui->multiCircleCountSB->show():ui->multiCircleCountSB->hide();
                 ui->stationName->setPlaceholderText(cStationTypeStr[ui->Table_Abute->currentRow()]); });
@@ -48,19 +48,53 @@ bool StationAttribute::addStation()
     return m_isAdd;
 }
 
-CStationType StationAttribute::getStationType() const
+CStation StationAttribute::getAddStation(const int &p_id)
 {
-    return CStationType(ui->Table_Abute->currentRow());
+    m_station.workingProcedures.clear();
+    m_station.id = p_id;
+    m_station.type = CStationType(ui->Table_Abute->currentRow());
+    m_station.name = ui->stationName->text().trimmed();
+    m_station.workingProcedures.append(
+        CStationWorkingProcedure(0, CWorkingProcedureMode::csmTemplate, cnStr("模板")));
+    switch (m_station.type)
+    {
+    case stCircularPositioning:
+        addCircularPositioning();
+        break;
+    case stMultiCirclePositioning:
+        addMultiCirclePositioning();
+        break;
+    case stOneLineCrossingTwoSidesPositioning:
+        addOneLineCrossingTwoSidesPositioning();
+        break;
+    default:
+        break;
+    }
+    return m_station;
 }
 
-QString StationAttribute::getStationName() const
+void StationAttribute::addCircularPositioning()
 {
-    return ui->stationName->text().trimmed();
+    m_station.workingProcedures.append(CStationWorkingProcedure(m_station.workingProcedures.size(), CWorkingProcedureMode::csmCircular, cnStr("圆")));
 }
 
-int StationAttribute::getMultiCircleCount() const
+void StationAttribute::addMultiCirclePositioning()
 {
-    return ui->multiCircleCountSB->value();
+    int id = m_station.workingProcedures.size();
+    for (size_t i = 0; i < ui->multiCircleCountSB->value(); i++)
+    {
+        m_station.workingProcedures.append(CStationWorkingProcedure(id + i, CWorkingProcedureMode::csmCircular, cnStr("圆")));
+    }
+}
+
+void StationAttribute::addOneLineCrossingTwoSidesPositioning()
+{
+    int id = m_station.workingProcedures.size();
+    for (size_t i = 0; i < 4; i++)
+    {
+        m_station.workingProcedures.append(
+            CStationWorkingProcedure(i + id, CWorkingProcedureMode::csmLine, cnStr("线")));
+    }
 }
 
 void StationAttribute::addStationTypeItem(const QString &p_icon, const QString &p_cnName)
@@ -76,3 +110,4 @@ void StationAttribute::addStationTypeItem(const QString &p_icon, const QString &
     ui->Table_Abute->setItem(row, 1, pItem);
     ui->Table_Abute->resizeRowsToContents();
 }
+

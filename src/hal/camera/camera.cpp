@@ -1,6 +1,12 @@
 ﻿#include "camera.h"
 SINGLETON_GARBO(CCamera);
 using namespace HalconCpp;
+CCamera::CCamera()
+{
+}
+CCamera::~CCamera()
+{
+}
 
 bool CCamera::setPara(const QString &p_paraName, const HalconCpp::HTuple &p_value)
 {
@@ -21,7 +27,7 @@ bool CCamera::openCamera(const QString &p_name)
     try
     {
         OpenFramegrabber("GigEVision2", 0, 0, 0, 0, 0, 0, "progressive", -1, "default",
-                         -1, "false", "default",p_name.toStdString().c_str(), 0, -1, &m_cameraHandle);
+                         -1, "false", "default", p_name.toStdString().c_str(), 0, -1, &m_cameraHandle);
         return true;
     }
     catch (HException &except)

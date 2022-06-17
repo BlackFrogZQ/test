@@ -81,7 +81,6 @@ private:
     CSetStationDialog *mStationSet;
     EngDocument *mEngDocument;
     ModelTool *mModelTool;
-    ROITool *mROITool;
     CameraParams *mCameraParams;
     LightSet *mLightSet;
 

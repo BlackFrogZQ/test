@@ -1,6 +1,6 @@
 ﻿#include "ROITool.h"
-
-ROITool::ROITool(QWidget *parent)
+#include "src/hal/camera/camera.h"
+CRoiToolDialog::CRoiToolDialog(QWidget *parent)
     : QDialog(parent),
       ui(new Ui::ROITool)
 {
@@ -9,44 +9,31 @@ ROITool::ROITool(QWidget *parent)
     ui->comboBox_ROI->addItems(QStringList() << cnStr("无") << cnStr("交") << cnStr("差"));
     ui->comboBox_ROI->setCurrentIndex(0);
 
-    connect(ui->btn_ROIGrab, &QPushButton::clicked, this, [this]()
-            {
-                //todo 采图相机
-                });
-    connect(ui->btn_ROIRenewImage, &QPushButton::clicked, this, [this]()
-    {
-        //todo 采图相机
-    });
+    connect(ui->btn_ROIGrab, &QPushButton::clicked, this, &CRoiToolDialog::slotGrabImage);
+    connect(ui->btn_ROIRenewImage, &QPushButton::clicked, this, &CRoiToolDialog::slotGrabImage);
 
-    connect(ui->btn_DrawROI, &QPushButton::clicked, this,&ROITool::drawRoi);
+    connect(ui->btn_DrawROI, &QPushButton::clicked, this, &CRoiToolDialog::slotDrawRoi);
 
     connect(ui->btn_ROISave, &QPushButton::clicked, this, [this]()
             {
                 //todo 工程管理类
-                //saveTemplate();
+                //saveTemplate(); 
             });
     connect(ui->btn_ROIQuit, &QPushButton::clicked, this, [this]()
             { close(); });
 }
 
-ROITool::~ROITool()
+CRoiToolDialog::~CRoiToolDialog()
 {
-    delete ui;
+    delPtr(ui);
 }
 
-void ROITool::Obtain_ROIImage()
-{
-    emit Send_ObtainROIImage();
-}
-
-void ROITool::Model_Show_ROIImage(const HObject &Image, CStationMode CircularOrLine_Tem, QString Station_Num_Tem, int ROI_StationNum_Tem)
+void CRoiToolDialog::setStationMode(CWorkingProcedureMode CircularOrLine_Tem)
 {
     m_stationMode = CircularOrLine_Tem;
-    m_image = Image;
-    ROI_WindowHandle = getWidgetHandle(ui->widget_ROIImage);
 }
 
-void ROITool::drawRoi()
+void CRoiToolDialog::slotDrawRoi()
 {
     CDrawRoiShapeType shape;
     if (ui->rBtn_ROIRectangle1->isChecked())
@@ -69,13 +56,24 @@ void ROITool::drawRoi()
     showHImage(ui->widget_ROIContours, m_contoursImage);
 }
 
-void ROITool::generateTemplate(const CDrawRoiShapeType &p_drawShape, const CStationMode &p_stationMode)
+void CRoiToolDialog::slotGrabImage()
+{
+    if (!camera()->grabImage())
+    {
+        warningBox(this, "error", cnStr("ROITool grabImage error:%1").arg(camera()->getLastError()));
+        return;
+    }
+    m_image = camera()->getLastImage();
+    ROI_WindowHandle = getWidgetHandle(ui->widget_ROIImage);
+}
+
+void CRoiToolDialog::generateTemplate(const CDrawRoiShapeType &p_drawShape, const CWorkingProcedureMode &p_stationMode)
 {
     drawTemplate(p_drawShape);
     drawContours(p_stationMode);
 }
 
-void ROITool::showHImage(QWidget *p_widget, const HObject &p_image)
+void CRoiToolDialog::showHImage(QWidget *p_widget, const HObject &p_image)
 {
     HTuple windowHandle = getWidgetHandle(p_widget), w, h;
     GetImageSize(p_image, &w, &h);
@@ -83,14 +81,14 @@ void ROITool::showHImage(QWidget *p_widget, const HObject &p_image)
     DispObj(p_image, windowHandle);
 }
 
-HTuple ROITool::getWidgetHandle(QWidget *p_widget)
+HTuple CRoiToolDialog::getWidgetHandle(QWidget *p_widget)
 {
     HTuple windowHandle;
     OpenWindow(0, 0, p_widget->width(), p_widget->height(), long(p_widget->winId()), "visible", "", &windowHandle);
     return windowHandle;
 }
 
-void ROITool::saveTemplate(const QString &p_name)
+void CRoiToolDialog::saveTemplate(const QString &p_name)
 {
     WriteRegion(m_template, (p_name + ".hobj").toStdString().c_str());
 }
