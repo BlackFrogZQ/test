@@ -68,8 +68,8 @@ Mainscene::Mainscene(QWidget *parent)
 
     connect(mStationSet, &CSetStationDialog::Send_ShowModelTool, this, &Mainscene::Show_ModelTool); //给创建ModelTool窗口及向模板界面发送图像
     connect(mModelTool, &ModelTool::Send_ObtainImage, this, &Mainscene::TransferImage);      //给创建ModelTool窗口及向模板界面发送图像
-    connect(mStationSet, &CSetStationDialog::Send_ShowROITool, this, &Mainscene::Show_ROITool);     //给创建ROITool窗口及向模板界面发送图像
-    connect(mROITool, &ROITool::Send_ObtainROIImage, this, &Mainscene::TransferROIImage);    //给创建ROITool窗口及向模板界面发送图像
+
+
 
     connect(ui->actionCameraParameters, &QAction::triggered, this, [=]()
             { slot_CameraParams(); });
@@ -239,21 +239,6 @@ void Mainscene::TransferImage()
     mModelTool->Model_Show_Image(hv_Image, Station_Num_Tem);
 }
 
-//显示ROITool窗口
-void Mainscene::Show_ROITool(QString CircularOrLine, QString Station_Num, int ROI_StationNum)
-{
-    CircularOrLine_Tem = CircularOrLine;
-    Station_Num_Tem = Station_Num;
-    ROI_StationNum_Tem = ROI_StationNum;
-    mROITool->setWindowModality(Qt::ApplicationModal);
-    mROITool->show();
-}
-
-//发送图像给感兴趣区域界面
-void Mainscene::TransferROIImage()
-{
-    mROITool->Model_Show_ROIImage(hv_Image, CircularOrLine_Tem, Station_Num_Tem, ROI_StationNum_Tem);
-}
 
 //打开设置相机参数窗口
 void Mainscene::slot_CameraParams()

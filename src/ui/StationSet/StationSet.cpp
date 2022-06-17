@@ -200,7 +200,7 @@ void CSetStationDialog::CreateModel()
             }
         }
         CircularOrLine = cnStr("圆");
-        emit Send_ShowROITool(CircularOrLine, Station_Num, ROI_StationNum);
+        // emit Send_ShowROITool(CircularOrLine, Station_Num, ROI_StationNum);
     }
     else if (ui->Table_Temp->item(ui->Table_Temp->currentRow(), 2)->text() == cnStr("线"))
     {
@@ -230,11 +230,7 @@ void CSetStationDialog::CreateModel()
             }
         }
         CircularOrLine = cnStr("线");
-        emit Send_ShowROITool(CircularOrLine, Station_Num, ROI_StationNum);
-    }
-    else
-    {
-        return;
+        // emit Send_ShowROITool(CircularOrLine, Station_Num, ROI_StationNum);
     }
 }
 

@@ -13,7 +13,7 @@
 #include "StationSet/halconshare.h"
 #include "StationSet/StationSet.h"
 #include "StationSet/ModelTool.h"
-#include "StationSet/ROITool.h"
+#include "StationSet/roiTemplate/ROITool.h"
 #include "Camera/CameraParams.h"
 #include "LightSource/LightSet.h"
 
@@ -49,8 +49,6 @@ public slots:
     void slot_StationSet();
     void Show_ModelTool(QString Station_Num);
     void TransferImage();
-    void Show_ROITool(QString CircularOrLine, QString Station_Num, int ROI_StationNum);
-    void TransferROIImage();
     void slot_CameraParams();
     void Change_CameraParams(int Gain, int Exposure);
 

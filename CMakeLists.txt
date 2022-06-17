@@ -49,7 +49,9 @@ set(GLOB uiFiles
     "${PROJECT_SOURCE_DIR}/src/ui/SwitchUsers/*.ui"
     "${PROJECT_SOURCE_DIR}/src/ui/Camera/*.ui"
     "${PROJECT_SOURCE_DIR}/src/ui/LightSource/*.ui"
-    "${PROJECT_SOURCE_DIR}/src/ui/StationSet/*.ui")
+    "${PROJECT_SOURCE_DIR}/src/ui/StationSet/*.ui"
+    "${PROJECT_SOURCE_DIR}/src/ui/StationSet/roiTemplate/*.ui")
+
 
 set(uiCpp
     src/ui/Mainscene.cpp
@@ -61,8 +63,8 @@ set(uiCpp
     src/ui/StationSet/StationAttribute.cpp
     src/ui/StationSet/ModelTool.cpp
     src/ui/StationSet/MyThread_Model.cpp
-    src/ui/StationSet/MyThread_ROI.cpp
-    src/ui/StationSet/ROITool.cpp
+    src/ui/StationSet/roiTemplate/ROITool.cpp
+    src/ui/StationSet/roiTemplate/roiDraw.cpp
     src/ui/EngDocument/EngDocument.cpp
     src/ui/SwitchUsers/SwitchUsers.cpp
     src/ui/Camera/CameraParams.cpp

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "ui_StationSet.h"
 #include "ModelTool.h"
-#include "ROITool.h"
+#include "roiTemplate/ROITool.h"
 #include "StationAttributeDef.h"
 #include "StationSetDef.h"
 
@@ -19,7 +19,7 @@ public:
 
 signals:
     void Send_ShowModelTool(QString Station_Num);
-    void Send_ShowROITool(QString CircularOrLine, QString Station_Num, int ROI_StationNum);
+    void Send_ShowROITool(CStationType CircularOrLine, QString Station_Num, int ROI_StationNum);
     void Send_MScoreAbuteName(QString MScoreAbuteName, int MaxScore_Place, int WorkStep_Sum);
 protected slots:
     void slotAddStationPb();
