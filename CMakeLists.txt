@@ -42,6 +42,9 @@ set(Qt5model
 )
 
 include_directories(include/halcon12x64 include/halcon12x64/halconcpp)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/hal)
+
 file(GLOB LIBS "lib/halcon12x64/*.lib")
 set(GLOB uiFiles
     "${PROJECT_SOURCE_DIR}/src/ui/*.ui"
@@ -67,7 +70,7 @@ set(uiCpp
     src/ui/StationSet/roiTemplate/roiDraw.cpp
     src/ui/EngDocument/EngDocument.cpp
     src/ui/SwitchUsers/SwitchUsers.cpp
-    src/ui/Camera/CameraParams.cpp
+    src/ui/CameraPara/CameraParams.cpp
     src/ui/LightSource/LightSet.cpp)
 
 set(sources
@@ -84,7 +87,8 @@ add_executable(${PROJECT_NAME}
 )
 target_link_libraries(${PROJECT_NAME}
     ${Qt5model}
-    ${LIBS} ) # Qt5 Shared Library
+    ${LIBS}
+    halLib ) # Qt5 Shared Library
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

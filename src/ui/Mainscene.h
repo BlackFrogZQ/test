@@ -13,8 +13,7 @@
 #include "StationSet/halconshare.h"
 #include "StationSet/StationSet.h"
 #include "StationSet/ModelTool.h"
-#include "StationSet/roiTemplate/ROITool.h"
-#include "Camera/CameraParams.h"
+#include "CameraPara/CameraParams.h"
 #include "LightSource/LightSet.h"
 
 #include <QMetaType>
@@ -28,7 +27,6 @@
 #include <QFileDialog>
 #include <QSerialPortInfo>
 #include <QTextBrowser>
-#include <QDebug>
 
 using namespace HalconCpp;
 

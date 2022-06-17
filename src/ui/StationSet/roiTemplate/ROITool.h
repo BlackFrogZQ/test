@@ -18,12 +18,14 @@ public:
 public slots:
     void Obtain_ROIImage();
     void Model_Show_ROIImage(const HObject &Image, CStationMode CircularOrLine_Tem, QString Station_Num_Tem, int ROI_StationNum_Tem);
-    void DrawROI();
     //无后缀
     void saveTemplate(const QString &p_name);
 
 signals:
     void Send_ObtainROIImage();
+
+protected slots:
+    void drawRoi();
 
 protected:
     void generateTemplate(const CDrawRoiShapeType &p_drawShape, const CStationMode &p_stationMode);

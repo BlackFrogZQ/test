@@ -57,9 +57,6 @@ Mainscene::Mainscene(QWidget *parent)
     mModelTool = NULL;
     mModelTool = new ModelTool;
 
-    mROITool = NULL;
-    mROITool = new ROITool;
-
     mCameraParams = NULL;
     mCameraParams = new CameraParams;
 
@@ -73,6 +70,7 @@ Mainscene::Mainscene(QWidget *parent)
 
     connect(ui->actionCameraParameters, &QAction::triggered, this, [=]()
             { slot_CameraParams(); });
+
     connect(mCameraParams, &CameraParams::Send_CameraParams, this, &Mainscene::Change_CameraParams);
 
     connect(ui->actionLight, &QAction::triggered, this, [=]()
@@ -181,7 +179,6 @@ Mainscene::~Mainscene()
     delPtr(mEngDocument);
     delPtr(mStationSet);
     delPtr(mModelTool);
-    delPtr(mROITool);
     delPtr(mCameraParams);
     delPtr(mCameraParams);
     delPtr(mLightSet);

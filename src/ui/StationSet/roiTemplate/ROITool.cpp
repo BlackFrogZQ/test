@@ -10,21 +10,21 @@ ROITool::ROITool(QWidget *parent)
     ui->comboBox_ROI->setCurrentIndex(0);
 
     connect(ui->btn_ROIGrab, &QPushButton::clicked, this, [this]()
-            { 
-                //todo 采图相机 
+            {
+                //todo 采图相机
                 });
-    connect(ui->btn_ROIRenewImage, &QPushButton::clicked, this, [this]() 
+    connect(ui->btn_ROIRenewImage, &QPushButton::clicked, this, [this]()
     {
-
+        //todo 采图相机
     });
 
-    connect(ui->btn_DrawROI, &QPushButton::clicked, this, [this]()
-            { DrawROI(); });
+    connect(ui->btn_DrawROI, &QPushButton::clicked, this,&ROITool::drawRoi);
 
     connect(ui->btn_ROISave, &QPushButton::clicked, this, [this]()
-            { 
+            {
                 //todo 工程管理类
-                saveTemplate(); });
+                //saveTemplate();
+            });
     connect(ui->btn_ROIQuit, &QPushButton::clicked, this, [this]()
             { close(); });
 }
@@ -46,7 +46,7 @@ void ROITool::Model_Show_ROIImage(const HObject &Image, CStationMode CircularOrL
     ROI_WindowHandle = getWidgetHandle(ui->widget_ROIImage);
 }
 
-void ROITool::DrawROI()
+void ROITool::drawRoi()
 {
     CDrawRoiShapeType shape;
     if (ui->rBtn_ROIRectangle1->isChecked())

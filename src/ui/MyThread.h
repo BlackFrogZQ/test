@@ -29,7 +29,7 @@ signals:
     void Send_RunStart();
     void stop_thread();
     void stary_thread(const HObject& p_obj);
-
+ 
 protected:
 
 private:
