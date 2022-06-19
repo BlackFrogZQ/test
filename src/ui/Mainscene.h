@@ -11,7 +11,6 @@
 #include "MyThread_DisOneCircle.h"
 #include "EngDocument/EngDocument.h"
 #include "StationSet/halconshare.h"
-#include "StationSet/StationSet.h"
 #include "StationSet/ModelTool.h"
 #include "CameraPara/CameraParams.h"
 #include "LightSource/LightSet.h"
@@ -78,7 +77,6 @@ private:
     MyThread_DisOneCircle *myG_DisOneCircle;
     QThread *thread_DisOneCircle;
 
-    CSetStationDialog *mStationSet;
     EngDocument *mEngDocument;
     ModelTool *mModelTool;
     CameraParams *mCameraParams;

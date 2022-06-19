@@ -1,5 +1,6 @@
 ﻿#include "Mainscene.h"
 #include "SwitchUsers/SwitchUsers.h"
+#include "StationSet/StationSet.h"
 
 Mainscene::Mainscene(QWidget *parent)
     : QMainWindow(parent), ui(new Ui_Mainscene)
@@ -50,9 +51,6 @@ Mainscene::Mainscene(QWidget *parent)
 
     mEngDocument = NULL;
     mEngDocument = new EngDocument;
-
-    mStationSet = NULL;
-    mStationSet = new CSetStationDialog;
 
     mModelTool = NULL;
     mModelTool = new ModelTool;
@@ -177,7 +175,6 @@ Mainscene::~Mainscene()
 {
     dealClose();
     delPtr(mEngDocument);
-    delPtr(mStationSet);
     delPtr(mModelTool);
     delPtr(mCameraParams);
     delPtr(mCameraParams);
@@ -220,7 +217,8 @@ void Mainscene::obtain_EngDocument(int EngDoc_CurrRow, QString EngDoc_CurrName)
 //打开工位设置窗口
 void Mainscene::slot_StationSet()
 {
-    mStationSet->exec();
+    CSetStationDialog setStationDialog;
+    setStationDialog.exec();
 }
 
 //显示ModelTool窗口

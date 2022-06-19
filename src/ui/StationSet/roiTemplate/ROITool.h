@@ -14,11 +14,8 @@ class CRoiToolDialog : public QDialog
 public:
     CRoiToolDialog(QWidget *parent = nullptr);
     ~CRoiToolDialog();
-    void setStationMode(CWorkingProcedureMode CircularOrLine_Tem);
-
-public slots:
-    //无后缀
-    void saveTemplate(const QString &p_name);
+    bool isSaveStationWorkingProcedure(CStationWorkingProcedure* const p_pWorkingProcedure);
+    void saveTemplate(const QString &p_stationDir);
 
 protected slots:
     void slotDrawRoi();
@@ -27,8 +24,8 @@ protected slots:
 protected:
     void generateTemplate(const CDrawRoiShapeType &p_drawShape, const CWorkingProcedureMode &p_stationMode);
 
-    void showHImage(QWidget *p_widget, const HObject &p_image);
-    HTuple getWidgetHandle(QWidget *p_widget);
+    void showHImage(HTuple p_windowHandle, const HObject &p_image);
+    void setWidgetHandle();
     void drawTemplate(const CDrawRoiShapeType &p_drawShape);
     void drawRectangle();
     void drawRectangle2();
@@ -38,7 +35,6 @@ protected:
     void drawContours(const CWorkingProcedureMode &p_stationMode);
     void drawContoursCircular();
     void drawContoursLine();
-
 private:
     Ui::ROITool *ui;
     HObject m_image;
@@ -46,5 +42,7 @@ private:
     HObject m_contoursImage;
 
     HTuple ROI_WindowHandle;
-    CWorkingProcedureMode m_stationMode;
+    HTuple ROIContour_WindowHandle;
+    CStationWorkingProcedure* m_pStationWorkingProcedure;
+    bool m_isSave;
 };

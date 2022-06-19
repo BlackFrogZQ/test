@@ -170,7 +170,7 @@ void LightSet::openPort(QLabel * label_statubar_light)
 
     QString str_Serial;
     str_Serial = ui->ComboBox_PortName->currentText();
-    hv_output_SerialPort[2] = str_Serial.toStdString().c_str();
+    hv_output_SerialPort[2] = str_Serial.toStdString().data();
 
     OpenSerial(hv_output_SerialPort[2], &hv_SerialHandle);
     SetSerialParam(hv_SerialHandle, ui->ComboBox_Bound->currentText().toInt(), 8, "none", "none", 1, 0, "unchanged");

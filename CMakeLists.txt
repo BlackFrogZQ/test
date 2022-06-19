@@ -23,7 +23,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 message("Looking for Qt...")
-find_package(Qt5 COMPONENTS Core Gui Network SerialBus Widgets Sql Xlsx SerialPort Qml REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui Network SerialBus Widgets SerialPort Qml REQUIRED)
 if (${Qt5_FOUND})
     message("Found Qt " ${Qt5_VERSION})
 else()

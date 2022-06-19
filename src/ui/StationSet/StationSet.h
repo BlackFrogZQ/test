@@ -21,7 +21,7 @@ protected slots:
 
 protected:
     void addStationWorkingProcedure(const CStationWorkingProcedure &p_workingProcedure);
-    void showRoiToolDialog(const CWorkingProcedureMode &p_stationType);
+    void showRoiToolDialog();
     void showModelToolDialog();
     void updateProject();
 

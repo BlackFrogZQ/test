@@ -17,7 +17,7 @@ void MyThread_Model::GenerateTemplate(const HObject& ho_Image, HTuple hv_WindowH
     HTuple hTuple_Numberlever,hTuple_Numberlever_Last;
     if(Numberlever == 0)
     {
-        hTuple_Numberlever[3] = AUTO.toStdString().c_str();
+        hTuple_Numberlever[3] = AUTO.toStdString().data();
         hTuple_Numberlever_Last = hTuple_Numberlever[3];
     }
     else{
@@ -34,7 +34,7 @@ void MyThread_Model::GenerateTemplate(const HObject& ho_Image, HTuple hv_WindowH
     HTuple hTuple_AngleStep,hTuple_AngleStep_Last,hTuple_ultimately;
     if(AngleStep == 0)
     {
-        hTuple_AngleStep[3] = AUTO.toStdString().c_str();
+        hTuple_AngleStep[3] = AUTO.toStdString().data();
         hTuple_AngleStep_Last = hTuple_AngleStep[3];
     }
     else{
@@ -46,14 +46,14 @@ void MyThread_Model::GenerateTemplate(const HObject& ho_Image, HTuple hv_WindowH
 
     //优化算法和极性
     HTuple hTuple_Optimization,hTuple_Metric;
-    hTuple_Optimization[3] = Optimization.toStdString().c_str();
-    hTuple_Metric[3] = Metric.toStdString().c_str();
+    hTuple_Optimization[3] = Optimization.toStdString().data();
+    hTuple_Metric[3] = Metric.toStdString().data();
 
     //对比度
     HTuple hTuple_Contrast,hTuple_Contrast_Last;
     if(Contrast == 0)
     {
-        hTuple_Contrast[3] = AUTO.toStdString().c_str();
+        hTuple_Contrast[3] = AUTO.toStdString().data();
         hTuple_Contrast_Last = hTuple_Contrast[3];
     }
     else{
@@ -65,7 +65,7 @@ void MyThread_Model::GenerateTemplate(const HObject& ho_Image, HTuple hv_WindowH
     HTuple hTuple_MinContrast,hTuple_MinContrast_Last;
     if(MinContrast == 0)
     {
-        hTuple_MinContrast[3] = AUTO.toStdString().c_str();
+        hTuple_MinContrast[3] = AUTO.toStdString().data();
         hTuple_MinContrast_Last = hTuple_MinContrast[3];
     }
     else{
@@ -112,8 +112,8 @@ void MyThread_Model::mT_SavesModel(QString Station_Num)
     path_current += add_current;
 
     HTuple hTuple_ShapeModel, hTuple_ModelPos, hv_Station_Num, hv_path_current;
-    hv_Station_Num[3] = Station_Num.toStdString().c_str();
-    hv_path_current[3] = path_current.toStdString().c_str();
+    hv_Station_Num[3] = Station_Num.toStdString().data();
+    hv_path_current[3] = path_current.toStdString().data();
     hTuple_ShapeModel = (hv_path_current[3]+"ShapeModel_" + hv_Station_Num[3]) + ".smd.shm";
     hTuple_ModelPos = hv_path_current[3]+"ModelPos_" + hv_Station_Num[3] + ".tup";
 

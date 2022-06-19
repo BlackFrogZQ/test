@@ -28,7 +28,7 @@ void MyThread_Discern::Start_Discern()
 
         HTuple hTuple_ShapeModel, hv_Station_Num, hv_path_current;
         hv_Station_Num[3] = i;
-        hv_path_current[3] = path_current.toStdString().c_str();
+        hv_path_current[3] = path_current.toStdString().data();
         hTuple_ShapeModel = (hv_path_current[3]+"ShapeModel_" + hv_Station_Num[3]) + ".smd.shm";
         try{
             ReadShapeModel(hTuple_ShapeModel, &hv_ModelID);

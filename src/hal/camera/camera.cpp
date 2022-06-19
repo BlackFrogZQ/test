@@ -1,7 +1,7 @@
 ﻿#include "camera.h"
 SINGLETON_GARBO(CCamera);
 using namespace HalconCpp;
-CCamera::CCamera()
+CCamera::CCamera() : m_name("0030533560c6_Basler_acA130060gc"), m_isOpen(false)
 {
 }
 CCamera::~CCamera()
@@ -12,7 +12,7 @@ bool CCamera::setPara(const QString &p_paraName, const HalconCpp::HTuple &p_valu
 {
     try
     {
-        SetFramegrabberParam(m_cameraHandle, p_paraName.toStdString().c_str(), p_value);
+        SetFramegrabberParam(m_cameraHandle, p_paraName.toStdString().data(), p_value);
         return true;
     }
     catch (HException &except)
@@ -27,7 +27,9 @@ bool CCamera::openCamera(const QString &p_name)
     try
     {
         OpenFramegrabber("GigEVision2", 0, 0, 0, 0, 0, 0, "progressive", -1, "default",
-                         -1, "false", "default", p_name.toStdString().c_str(), 0, -1, &m_cameraHandle);
+                         -1, "false", "default", p_name.toStdString().data(), 0, -1, &m_cameraHandle);
+        m_name = p_name;
+        m_isOpen = true;
         return true;
     }
     catch (HException &except)
@@ -39,14 +41,17 @@ bool CCamera::openCamera(const QString &p_name)
 
 bool CCamera::grabImage()
 {
-    try
+    if (m_isOpen || openCamera(m_name))
     {
-        GrabImage(&m_image, m_cameraHandle);
-        return true;
-    }
-    catch (HException &except)
-    {
-        m_error = except.ErrorText().Text();
+        try
+        {
+            GrabImage(&m_image, m_cameraHandle);
+            return true;
+        }
+        catch (HException &except)
+        {
+            m_error = except.ErrorText().Text();
+        }
     }
     return false;
 }

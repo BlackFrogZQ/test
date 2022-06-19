@@ -18,7 +18,7 @@ void MyThread_DisOneCircle::Start_DisOneCircle(HObject ho_Image, HTuple hv_Windo
 
     HTuple hTuple_ShapeModel, hTuple_ModelPos, hTuple_region, hv_Station_Num, hv_path_current, hv_Tail;
     hv_Station_Num[3] = MaxScore_Place;
-    hv_path_current[3] = path_current.toStdString().c_str();
+    hv_path_current[3] = path_current.toStdString().data();
     hv_Tail[3] = 1;
     hTuple_ShapeModel = (hv_path_current[3]+"ShapeModel_" + hv_Station_Num[3]) + ".smd.shm";
     hTuple_ModelPos = hv_path_current[3]+"ModelPos_" + hv_Station_Num[3] + ".tup";

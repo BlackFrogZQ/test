@@ -15,6 +15,8 @@ public:
     QString getLastError() const;
 
 protected:
+    bool m_isOpen;
+    QString m_name;
     QString m_error;
     HalconCpp::HObject m_image;
     HalconCpp::HTuple m_cameraHandle;

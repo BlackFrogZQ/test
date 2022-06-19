@@ -2,6 +2,8 @@
 #include "src/hal/camera/camera.h"
 CRoiToolDialog::CRoiToolDialog(QWidget *parent)
     : QDialog(parent),
+      ROI_WindowHandle(-1),
+      ROIContour_WindowHandle(-1),
       ui(new Ui::ROITool)
 {
     ui->setupUi(this);
@@ -16,9 +18,8 @@ CRoiToolDialog::CRoiToolDialog(QWidget *parent)
 
     connect(ui->btn_ROISave, &QPushButton::clicked, this, [this]()
             {
-                //todo 工程管理类
-                //saveTemplate(); 
-            });
+                m_isSave = true;
+                close(); });
     connect(ui->btn_ROIQuit, &QPushButton::clicked, this, [this]()
             { close(); });
 }
@@ -28,9 +29,13 @@ CRoiToolDialog::~CRoiToolDialog()
     delPtr(ui);
 }
 
-void CRoiToolDialog::setStationMode(CWorkingProcedureMode CircularOrLine_Tem)
+bool CRoiToolDialog::isSaveStationWorkingProcedure(CStationWorkingProcedure *const p_pWorkingProcedure)
 {
-    m_stationMode = CircularOrLine_Tem;
+    m_isSave = false;
+    m_pStationWorkingProcedure = p_pWorkingProcedure;
+    assert(m_pStationWorkingProcedure != nullptr);
+    this->exec();
+    return m_isSave;
 }
 
 void CRoiToolDialog::slotDrawRoi()
@@ -52,8 +57,15 @@ void CRoiToolDialog::slotDrawRoi()
     {
         shape = cdrstArbitrarily;
     }
-    generateTemplate(shape, m_stationMode);
-    showHImage(ui->widget_ROIContours, m_contoursImage);
+    try
+    {
+        generateTemplate(shape, m_pStationWorkingProcedure->mode);
+        showHImage(ROIContour_WindowHandle, m_contoursImage);
+    }
+    catch (HException &except)
+    {
+        warningBox(this, "CRoiToolDialog error", except.ErrorText().Text());
+    }
 }
 
 void CRoiToolDialog::slotGrabImage()
@@ -64,7 +76,9 @@ void CRoiToolDialog::slotGrabImage()
         return;
     }
     m_image = camera()->getLastImage();
-    ROI_WindowHandle = getWidgetHandle(ui->widget_ROIImage);
+    setWidgetHandle();
+    DispObj(m_image,ROI_WindowHandle);
+    // showHImage(ROI_WindowHandle, m_image);
 }
 
 void CRoiToolDialog::generateTemplate(const CDrawRoiShapeType &p_drawShape, const CWorkingProcedureMode &p_stationMode)
@@ -73,22 +87,78 @@ void CRoiToolDialog::generateTemplate(const CDrawRoiShapeType &p_drawShape, cons
     drawContours(p_stationMode);
 }
 
-void CRoiToolDialog::showHImage(QWidget *p_widget, const HObject &p_image)
+void CRoiToolDialog::showHImage(HTuple p_windowHandle, const HObject &p_image)
 {
-    HTuple windowHandle = getWidgetHandle(p_widget), w, h;
-    GetImageSize(p_image, &w, &h);
-    SetPart(windowHandle, 0, 0, w, h);
-    DispObj(p_image, windowHandle);
+    try
+    {
+        HTuple w, h;
+        GetImageSize(p_image, &w, &h);
+        SetPart(p_windowHandle, 0, 0, w, h);
+        DispObj(p_image, p_windowHandle);
+        this->update();
+    }
+    catch (HException &except)
+    {
+        warningBox(this, "CRoiToolDialog error", except.ErrorText().Text());
+    }
 }
 
-HTuple CRoiToolDialog::getWidgetHandle(QWidget *p_widget)
+void CRoiToolDialog::setWidgetHandle()
 {
-    HTuple windowHandle;
-    OpenWindow(0, 0, p_widget->width(), p_widget->height(), long(p_widget->winId()), "visible", "", &windowHandle);
-    return windowHandle;
+    try
+    {
+        QWidget *p_widget = ui->widget_ROIImage;
+        HDevWindowStack::Push(ROI_WindowHandle);
+        if (HDevWindowStack::IsOpen())
+        {
+            CloseWindow(ROI_WindowHandle);
+            ROI_WindowHandle = -1;
+        }
+        HDevWindowStack::Pop();
+        OpenWindow(0, 0, p_widget->width(), p_widget->height(), HTuple(long(p_widget->winId())), "visible", "", &ROI_WindowHandle);
+
+        p_widget = ui->widget_ROIContours;
+        HDevWindowStack::Push(ROIContour_WindowHandle);
+        if (HDevWindowStack::IsOpen())
+        {
+            CloseWindow(ROIContour_WindowHandle);
+            ROIContour_WindowHandle = -1;
+        }
+        HDevWindowStack::Pop();
+        OpenWindow(0, 0, p_widget->width(), p_widget->height(), HTuple(long(p_widget->winId())), "visible", "", &ROIContour_WindowHandle);
+    }
+    catch (HException &except)
+    {
+        QWidget *p_widget = ui->widget_ROIImage;
+        if (ROI_WindowHandle == -1)
+        {
+            OpenWindow(0, 0, p_widget->width(), p_widget->height(), HTuple(long(p_widget->winId())), "visible", "", &ROI_WindowHandle);
+        }
+        p_widget = ui->widget_ROIContours;
+        if (ROIContour_WindowHandle == -1)
+        {
+            OpenWindow(0, 0, p_widget->width(), p_widget->height(), HTuple(long(p_widget->winId())), "visible", "", &ROIContour_WindowHandle);
+        }
+    }
 }
 
-void CRoiToolDialog::saveTemplate(const QString &p_name)
+void CRoiToolDialog::saveTemplate(const QString &p_stationDir)
 {
-    WriteRegion(m_template, (p_name + ".hobj").toStdString().c_str());
+    try
+    {
+        //暂时支持csmLine、csmCircular，其他的需要检测
+        assert(m_pStationWorkingProcedure->mode == csmLine ||
+               m_pStationWorkingProcedure->mode == csmCircular);
+        WriteRegion(m_template,
+                    (p_stationDir + "/" +
+                     m_pStationWorkingProcedure->getDirName() + "/" +
+                     m_pStationWorkingProcedure->getRoiTemplateName())
+                        .toStdString()
+                        .c_str());
+    }
+    catch (HException &except)
+    {
+        m_isSave = false;
+        warningBox(this, "CRoiToolDialog error", except.ErrorText().Text());
+    }
 }

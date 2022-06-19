@@ -72,12 +72,11 @@ void CSetStationDialog::addStationWorkingProcedure(const CStationWorkingProcedur
 
 void CSetStationDialog::slotCreateModel()
 {
-    CStationWorkingProcedure wp = m_project->stations[m_stationId].workingProcedures[m_workingProcedureId];
-    switch (wp.mode)
+    switch (m_project->stations[m_stationId].workingProcedures[m_workingProcedureId].mode)
     {
     case csmCircular:
     case csmLine:
-        showRoiToolDialog(wp.mode);
+        showRoiToolDialog();
         break;
     case csmTemplate:
         showModelToolDialog();
@@ -114,11 +113,14 @@ void CSetStationDialog::slotCurrentChange(int row)
     m_workingProcedureId = -1;
 }
 
-void CSetStationDialog::showRoiToolDialog(const CWorkingProcedureMode &p_stationMode)
+void CSetStationDialog::showRoiToolDialog()
 {
+    CStation *const station = &(m_project->stations[m_stationId]);
     CRoiToolDialog roiToolDialog;
-    roiToolDialog.setStationMode(p_stationMode);
-    roiToolDialog.exec();
+    if (roiToolDialog.isSaveStationWorkingProcedure(&(station->workingProcedures[m_workingProcedureId])))
+    {
+        roiToolDialog.saveTemplate(getSaveProjectDir() + "/" + m_project->getDirName() + "/" + station->getDirName());
+    }
 }
 
 void CSetStationDialog::showModelToolDialog()
